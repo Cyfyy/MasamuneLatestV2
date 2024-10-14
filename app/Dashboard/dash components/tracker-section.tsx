@@ -5,6 +5,19 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Pencil, Trash2, Plus, MoreHorizontal, Search } from "lucide-react";
 import { useTheme } from "next-themes";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
+import { FaArrowUp, FaArrowDown, FaEquals } from 'react-icons/fa'; // Import the Total icon here
+
+type StatKey = 'manager' | 'scholar' | 'total' | 'todaySLP' | 'yesterdaySLP' | 'totalScholars';
+
+// Update logo type to allow string or JSX.Element
+type Stat = {
+  label: string;
+  value: number;
+  isIncreasing: boolean;
+  logo: string | JSX.Element; // Allow both string and JSX.Element
+  logoWidth: number;
+  logoHeight: number;
+};
 
 export function TrackerSection() {
   const [scholars, setScholars] = useState([
@@ -12,11 +25,20 @@ export function TrackerSection() {
     { id: 2, name: "Bob", axieId: "AX124", managerShare: 40, scholarShare: 60 },
   ]);
 
+  const stats: Record<StatKey, Stat> = {
+    manager: { label: "Manager AXS", value: 56687, isIncreasing: true, logo: "/images/AXS-logo.png", logoWidth: 50 , logoHeight: 50 },
+    scholar: { label: "Manager SLP", value: 118000, isIncreasing: false, logo: "/images/SLP-logo.png", logoWidth: 42 , logoHeight: 42 },
+    total: { label: "Total", value: 200000, isIncreasing: true, logo: <FaEquals className="w-8 h-8 text-blue-500" />, logoWidth: 60, logoHeight: 60 }, // Use the Total icon here
+    todaySLP: { label: "Scholar AXS", value: 10000, isIncreasing: true, logo: "/images/AXS-logo.png", logoWidth: 50, logoHeight: 50 },
+    yesterdaySLP: { label: "Scholar SLP", value: 11000, isIncreasing: false, logo: "/images/SLP-logo.png", logoWidth: 42, logoHeight: 42 },
+    totalScholars: { label: "Total", value: 3, isIncreasing: true, logo: <FaEquals className="w-8 h-8 text-blue-500" />, logoWidth: 60, logoHeight: 60 },
+  };
+
   const [showModal, setShowModal] = useState(false);
   const [newScholar, setNewScholar] = useState({
     name: "",
     axieId: "",
-    managerShare: 0,  // Changed null to 0
+    managerShare: 0,
     scholarShare: 100,
   });
 
@@ -40,7 +62,7 @@ export function TrackerSection() {
       setNewScholar({
         ...newScholar,
         managerShare,
-        scholarShare: (100 - managerShare) as number, // Ensure scholarShare is treated as a number
+        scholarShare: (100 - managerShare),
       });
     }
   };
@@ -60,6 +82,48 @@ export function TrackerSection() {
 
   return (
     <div className={`space-y-4 ${theme === "dark" ? "text-white" : "text-black"}`}>
+      <div className="flex justify-between items-center bg-blue-200 p-8 rounded-lg">
+        {/* Stats Grid */}
+        <div className="grid grid-cols-3 gap-8 w-full">
+          {/* Loop through stats using the defined StatKey type */}
+          {(Object.keys(stats) as StatKey[]).map((key) => (
+            <div key={key} className="flex flex-col bg-gray-800 text-white p-4 rounded-2xl">
+              {/* Label */}
+              <span className="text-left text-sm">{stats[key].label}</span>
+              
+              {/* Value, Icon, and Logo */}
+              <div className="flex justify-between items-center mt-2">
+                <div className="flex items-center space-x-2">
+                  {/* Value */}
+                  <span className="text-2xl font-bold">{stats[key].value.toLocaleString()}</span>
+
+                  {/* Conditional rendering of the icon */}
+                  {stats[key].isIncreasing ? (
+                    <FaArrowUp className="text-green-500" />
+                  ) : (
+                    <FaArrowDown className="text-red-500" />
+                  )}
+                </div>
+
+                {/* Add logo or icon to the far right */}
+                <div className="flex items-center" style={{ width: `${stats[key].logoWidth}px`, height: `${stats[key].logoHeight}px`, marginLeft: 'auto' }}>
+                  {typeof stats[key].logo === 'string' ? (
+                    <img
+                      src={stats[key].logo}
+                      alt={`${stats[key].label} logo`}
+                      className="object-contain"
+                    />
+                  ) : (
+                    stats[key].logo // Render the Total icon directly
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* End of Stats Section */}
+
       <div className="flex justify-between items-center">
         <div className="relative w-1/3">
           <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -77,7 +141,7 @@ export function TrackerSection() {
           <div className="relative group">
             <Button onClick={() => setShowModal(true)} className="flex items-center">
               <Plus className="h-5 w-5" />
-              <span className="absolute left-1/2 -top-8 transform -translate-x-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+              <span className="absolute left-1/2 -top-4 transform -translate-x-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                 Add Scholar
               </span>
             </Button>
@@ -88,7 +152,7 @@ export function TrackerSection() {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="mr-2 flex items-center">
                   <MoreHorizontal className="h-5 w-5" />
-                  <span className="absolute left-1/2 -top-8 transform -translate-x-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                  <span className="absolute left-1/2 -top-4 transform -translate-x-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
                     Options
                   </span>
                 </Button>
@@ -103,13 +167,14 @@ export function TrackerSection() {
         </div>
       </div>
 
+      {/* Scholar List Table */}
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
+            <TableHead>Scholar Name</TableHead>
             <TableHead>Axie ID</TableHead>
-            <TableHead>Manager Share (%)</TableHead>
-            <TableHead>Scholar Share (%)</TableHead>
+            <TableHead>Manager Share</TableHead>
+            <TableHead>Scholar Share</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -118,13 +183,17 @@ export function TrackerSection() {
             <TableRow key={scholar.id}>
               <TableCell>{scholar.name}</TableCell>
               <TableCell>{scholar.axieId}</TableCell>
-              <TableCell>{scholar.managerShare}</TableCell>
+              <TableCell>
+                <Input
+                  type="number"
+                  value={scholar.managerShare}
+                  onChange={(e) => handleNumberInput(e)}
+                  className={`bg-white dark:bg-gray-700 rounded-md`}
+                />
+              </TableCell>
               <TableCell>{scholar.scholarShare}</TableCell>
               <TableCell>
-                <Button variant="ghost" size="sm">
-                  <Pencil className="h-4 w-4" />
-                </Button>
-                <Button variant="ghost" size="sm" onClick={() => deleteScholar(scholar.id)}>
+                <Button onClick={() => deleteScholar(scholar.id)}>
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </TableCell>
@@ -132,64 +201,6 @@ export function TrackerSection() {
           ))}
         </TableBody>
       </Table>
-
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-1/2">
-            <h2 className="text-lg font-bold mb-4 text-center">ADD SCHOLAR</h2>
-            <form className="space-y-4">
-              <div>
-                <label className="block mb-1 text-sm font-semibold text-orange-500">Name</label>
-                <Input
-                  className="w-full border-2 border-gray-300 focus:border-orange-500 focus:ring-orange-500 rounded-lg"
-                  placeholder="Name"
-                  value={newScholar.name}
-                  onChange={(e) => setNewScholar({ ...newScholar, name: e.target.value })}
-                />
-              </div>
-              <div>
-                <label className="block mb-1 text-sm font-semibold text-orange-500">Axie ID</label>
-                <Input
-                  className="w-full border-2 border-gray-300 focus:border-orange-500 focus:ring-orange-500 rounded-lg"
-                  placeholder="Axie ID"
-                  value={newScholar.axieId}
-                  onChange={(e) => setNewScholar({ ...newScholar, axieId: e.target.value })}
-                />
-              </div>
-              <div className="flex space-x-4">
-                <div className="w-1/2">
-                  <label className="block mb-1 text-sm font-semibold text-orange-500">Manager Share (%)</label>
-                  <Input
-                    type="text"
-                    className="w-full border-2 border-gray-300 focus:border-orange-500 focus:ring-orange-500 rounded-lg"
-                    placeholder="Manager Share (%)"
-                    value={newScholar.managerShare ?? ''}  // This ensures no placeholder 0
-                    onChange={handleNumberInput}
-                  />
-                </div>
-                <div className="w-1/2">
-                  <label className="block mb-1 text-sm font-semibold text-orange-500">Scholar Share (%)</label>
-                  <Input
-                    type="number"
-                    readOnly
-                    className="w-full bg-gray-600 border-1 border-gray-300 rounded-lg"
-                    placeholder="Scholar Share (%)"
-                    value={newScholar.scholarShare}
-                  />
-                </div>
-              </div>
-              <div className="flex justify-between space-x-4 mt-4">
-                <Button variant="outline" onClick={() => setShowModal(false)} className="w-1/3">
-                  Cancel
-                </Button>
-                <Button onClick={addScholar} className="w-1/3 bg-orange-500 hover:bg-orange-600 text-white">
-                  Add
-                </Button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

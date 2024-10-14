@@ -141,7 +141,7 @@ export default function DashboardLayout() {
         </header>
 
         {/* Dynamic Content */}
-        <main className="p-6">
+        <main>
           {renderContent()}
         </main>
       </div>
