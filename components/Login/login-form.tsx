@@ -67,7 +67,7 @@ export function LoginForm({ setLoginEvent }: LoginFormProps) {
         throw new Error("Invalid email or password")
       }
 
-      router.push('/adminDashboard')
+      router.push('/Dashboard')
     } catch (error) {
       console.error(error)
       setError(error instanceof Error ? error.message : "An error occurred")

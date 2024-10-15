@@ -59,7 +59,7 @@ export function SignupModal({ isOpen, onClose, onSwitchToLogin }: SignupModalPro
       const res = await axios.post('/api/register', signupUser)
       if (res.status === 200 || res.status === 201) {
         console.log("User created successfully")
-        router.push('/adminDashboard')
+        router.push('/Dashboard')
       }
     } catch (error) {
       console.error(error)
@@ -89,6 +89,7 @@ export function SignupModal({ isOpen, onClose, onSwitchToLogin }: SignupModalPro
               type="text" 
               id="username" 
               name="name" 
+              placeholder='John Doe'
               className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 dark:focus:ring-orange-500 dark:focus:border-orange-500"
               value={signupUser.name}
               onChange={handleSignupInputChange}
@@ -100,6 +101,7 @@ export function SignupModal({ isOpen, onClose, onSwitchToLogin }: SignupModalPro
               type="email" 
               id="email" 
               name="email" 
+              placeholder='example@gmail.com'
               className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 dark:focus:ring-orange-500 dark:focus:border-orange-500" 
               value={signupUser.email}
               onChange={handleSignupInputChange}
@@ -111,6 +113,7 @@ export function SignupModal({ isOpen, onClose, onSwitchToLogin }: SignupModalPro
               type="password" 
               id="password" 
               name="password" 
+              placeholder='********'
               className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 dark:focus:ring-orange-500 dark:focus:border-orange-500" 
               value={signupUser.password}
               onChange={handleSignupInputChange}
@@ -122,6 +125,7 @@ export function SignupModal({ isOpen, onClose, onSwitchToLogin }: SignupModalPro
               type="password" 
               id="confirmPassword" 
               name="confirmPassword" 
+              placeholder='********'
               className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 dark:focus:ring-orange-500 dark:focus:border-orange-500" 
               value={signupUser.confirmPassword}
               onChange={handleSignupInputChange}
