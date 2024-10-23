@@ -12,7 +12,7 @@ import { useTheme } from "next-themes"
 import { useSession } from "next-auth/react"
 import { signOut } from "next-auth/react"
 import { Revalia } from "next/font/google"
-import { TrackerSection } from "@/app/Dashboard/dash components/tracker-section"
+import TrackerSection from "@/app/Dashboard/dash components/tracker-section" // Changed to default import
 import { DonateModal } from "@/app/Dashboard/dash components/donate-modal"
 import { LogsSection } from "@/app/Dashboard/dash components/logs-section"
 import { SettingsSection } from "@/app/Dashboard/dash components/settings-section"
